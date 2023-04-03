@@ -3,9 +3,9 @@
 class DatabaseService {
  
  private $db_host = "localhost";
- private $db_name = "adb";
+ private $db_name = "flightdb";
  private $db_user = "root";
- private $db_password = "jb395566";
+ private $db_password = "";
  public $conn;
 
  public function getConnection(){

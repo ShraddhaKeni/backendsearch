@@ -21,13 +21,13 @@ $conn = $databaseService->getConnection();
 $data = json_decode(file_get_contents("php://input"));
 
 $email = $data->email;
-$password = $data->password;
+$password =$data->password;
 
-$table_name = 'Users';
+$table_name = 'users';
 
-$query = "SELECT id, first_name, last_name, password FROM " . $table_name . " WHERE email = ? LIMIT 0,1";
+$query = "SELECT id, first_name, last_name, password FROM " . $table_name . " WHERE email = ?";
 
-$stmt = $conn->prepare( $query );
+$stmt = $conn->prepare($query);
 $stmt->bindParam(1, $email);
 $stmt->execute();
 $num = $stmt->rowCount();
@@ -38,10 +38,15 @@ if($num > 0){
     $firstname = $row['first_name'];
     $lastname = $row['last_name'];
     $password2 = $row['password'];
+//     echo $id;
+//     echo $firstname;
+//     echo $lastname;
+//     echo  $password2;
+// exit;
     
     if(password_verify($password, $password2))
     {
-        $secret_key = "YOUR_SECRET_KEY";
+        $secret_key =  "@#$4545fgdgdfg";
         $issuer_claim = "THE_ISSUER";
         $audience_claim = "THE_AUDIENCE";
         $issuedat_claim = 1356999524; // issued at
@@ -60,11 +65,22 @@ if($num > 0){
  
         http_response_code(200);
  
-        $jwt = JWT::encode($token, $secret_key);
+        $jwt = JWT::encode($token, $secret_key, 'HS256');
+       
+
+        $details = array(
+                "id" => $id,
+                "firstname" => $firstname,
+                "lastname" => $lastname,
+                "email" => $email,
+                "jwt" => $jwt
+        );
+
         echo json_encode(
             array(
+                "status" => 200,
                 "message" => "Successful login.",
-                "jwt" => $jwt
+                "jwt" => $details
             ));
     }
     else{

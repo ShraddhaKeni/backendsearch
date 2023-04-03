@@ -23,14 +23,27 @@ $lastName = $data->last_name;
 $email = $data->email;
 $password = $data->password;
 
-$table_name = 'Users';
+$selectquery = ("SELECT * FROM users  WHERE email = '{$email}'");
+
+$statement = $conn->prepare($selectquery);
+$statement->execute();
+$emailexists = $statement->rowCount();
+if($emailexists > 0){
+    echo "Email already registered";
+    exit;
+}
+
+
+$table_name = 'users';
 
 $query = "INSERT INTO " . $table_name . "
                 SET first_name = :firstname,
                     last_name = :lastname,
                     email = :email,
                     password = :password";
-
+// echo "$conn";
+// echo "$query";
+// exit;
 $stmt = $conn->prepare($query);
 
 $stmt->bindParam(':firstname', $firstName);
